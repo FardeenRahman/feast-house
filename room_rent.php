@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(!$_SESSION['email'])
+{
+	header("location:login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="dashboard.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
@@ -15,9 +24,7 @@
 	<div id="wrapper">
 		<header>
 			<div id="search_box">
-			<form>
-  				<input id="input" type="text" name="search" placeholder="Search..">
-			</form>
+			
 			</div>
 
 			<div id="company_name">
@@ -48,22 +55,63 @@
 
 						</script>
 					</div>
+					<div id="profile_name">
+					<?php
+					include_once("class/operation.php");
+					$crud = new Crud();
+					$email = $_SESSION['email'];
+					$query = "SELECT * FROM registration WHERE email='$email'";
+					
+					$result = $crud->getData($query);
+					
+					foreach ($result as $key => $res)
+				{							
+					echo "<h2 style=font-family:Pacifico;color:white;font-size:25px>" .$res['name']."</h2>" ;
+
+				}
+					?>
+					</div>
 					<img src="img.png">					
 					<a class="btn btn-success" id="edit" href="#" role="button">Edit</a>
-					<a class="btn btn-danger" id="logout" href="#" role="button">Logout</a>
+					<a class="btn btn-danger" id="logout" href="logout.php" role="button">Logout</a>
 					<div class="button_up">
 					<a class="btn btn-primary" id="button_up" href="manager.php" role="button">View as Manager</a>
-					<script>
-					
-					</script>
+					<?php
+			include_once('class/operation.php');
+			$operation = new CRUD();
+			// $query = "SELECT * from registration" ;
+			// $result = $crud->getData($query);
+			 $role = $_SESSION['role'];
+			// echo $result2;
+			// foreach($result as $key => $value){
+			// //	$a=$value;
+			// 	$a= $value['role'];
+			// 	if ($a == '0'){
+			// 		$b = $a;
+			// 	}
+			// }
+			
+			?>
+			<script>
+			var role = '<?php echo $role;?>';
+			$(document).ready(function(){
+				if(role == 0){
+					$("#button_up").removeAttr('href');
+			}
+			else if(role == 1){
+				$('#button_up').show();
+			}
+});
+			</script>
 					</div>
 				</div>
 
 				<div id="menu">
 					<ul>
-						<li><a href="dashboard.html">Dashboard</a></li>
-						<li><a href="#">Meal Rate</a></li>
-						<li><a href="#">Bazaar List</a></li>
+						<li><a href="dashboard.php">Dashboard</a></li>
+						<li><a href="writemeal.php">Write Meal</a></li>
+						<li><a href="meal_rate.php">Meal Rate</a></li>
+						<li><a href="bazaar_list_show.php">Bazaar List</a></li>
 						<li><a href="#">Current Balance</a></li>
 						<li><a href="room_rent.php">Room Rent</a></li>
 						<li><a href="#">Current Status</a></li>
@@ -77,6 +125,8 @@
 
 
 			<content>
+
+
 			<center><h2 style="font-family: Pacifico;margin-top: 5%;">Room rent</h2></center>
 
 			<div style="width: 90%;
@@ -87,21 +137,25 @@
 	font-size:25px;
 	background:#e3d6fc;
 ">
-                        <br>
+      <br>
                     
 	<div style="margin-left:25%;font-family: Pacifico;"> 
 	<label >Master Room Rent </label>
 	</div>
 	<div style="margin-left:25%;">
 <?php
-include_once("admin_config.php");
-$result = mysqli_query($conn,"SELECT master_room FROM roomrent");
+include_once("admin_operation.php");
 
-while ($res=mysqli_fetch_array($result))
+$crud = new Operation();
+$query = "SELECT master_room FROM roomrent";
+$result = $crud->getData($query);
+
+foreach ($result as $key => $res)
 {	
 	echo "= " .$res['master_room']."" ;
 	
-}?>
+}
+?>
 </div>
 <br/>
 	<div style="margin-left:25%;font-family: Pacifico;	"> 
@@ -109,14 +163,18 @@ while ($res=mysqli_fetch_array($result))
 	</div>
 	<div style="margin-left:25%;">
 <?php
-include_once("admin_config.php");
-$result = mysqli_query($conn,"SELECT individual_seat FROM roomrent");
+include_once("admin_operation.php");
 
-while ($res=mysqli_fetch_array($result))
+$crud = new Operation();
+$query = "SELECT individual_seat FROM roomrent";
+$result = $crud->getData($query);
+
+foreach ($result as $key => $res)
 {	
-	echo "= ".$res['individual_seat']."";
+	echo "= " .$res['individual_seat']."" ;
 	
-}?>
+}
+?>
 </div>
                 </div>
   
